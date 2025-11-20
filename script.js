@@ -194,19 +194,19 @@ window.addEventListener("DOMContentLoaded", () => {
             assignModal.addEventListener('click', (event) => {
                 room = document.getElementById(`${room_id}`)
                 // alert(room.querySelector('#work_cont').children.length)
-                if (room.querySelector('#work_cont').children.length >= max - 1) {
-                    Swal.fire({
-                        icon: "error",
-                        text: "You can't add more workers here",
-                    });
-                } else {
-                    if (event.target.classList.contains('un_worker')) {
+                if (event.target.classList.contains('un_worker')) {
+                    if (room.querySelector('#work_cont').children.length >= max - 1) {
+                        Swal.fire({
+                            icon: "error",
+                            text: "You can't add more workers here",
+                        });
+                    }
+                    else {
                         let selectedWorker = workers.find(worker => worker.id == event.target.id);
                         assignedWorkers.push(selectedWorker);
                         //get the index of the assigned worker
                         const index = workers.findIndex(worker => worker.id == event.target.id);
                         if (index !== -1) workers.splice(index, 1);
-
                         console.log(assignedWorkers);
                         console.log(workers);
                         room.querySelector('#work_cont').insertAdjacentHTML('afterbegin', `
@@ -214,29 +214,29 @@ window.addEventListener("DOMContentLoaded", () => {
                             <img class="rounded-[100%] shadow-[0_0_10px_green]" src=${selectedWorker.photo} alt="">
                             <div class="bg-white rounded-lg"><h2 class="text-[10px] text-center w-full px-2">${selectedWorker.name}</h2></div>
                         </div>
-                    `)
-                    event.target.remove()
+                        `)
+                        event.target.remove()
+                    }
                 }
-            }
-            if (room.classList.contains('important') && room.children.length < 2) {
-                room.style.backgroundColor = 'rgba(238, 91, 91, 0.529)';
-            }
-            else {
-                room.style.backgroundColor = '';
-            }
-            if (room.classList.contains('room') && room.children.length < max-1 && !room.querySelector('#work_cont')) {
-                room.insertAdjacentHTML('beforeend',
-                    `<div class="flex flex-wrap gap-3" id="work_cont">
+                if (room.classList.contains('important') && room.children.length < 2) {
+                    room.style.backgroundColor = 'rgba(238, 91, 91, 0.529)';
+                }
+                else {
+                    room.style.backgroundColor = '';
+                }
+                if (room.classList.contains('room') && room.children.length < max - 1 && !room.querySelector('#work_cont')) {
+                    room.insertAdjacentHTML('beforeend',
+                        `<div class="flex flex-wrap gap-3" id="work_cont">
                         <button class="w-[50px] h-[50px] bg-blue-600 rounded-xl flex justify-center items-center hover:scale-120 cursor-pointer add"><p class="text-3xl text-white pointer-events-none">+</p></button>
                 
                     </div>`
-                )
-            }
-    
-            if (room.querySelector('#work_cont').children.length >= max-1) {
-                room.querySelector('.add').remove()
-            }
-        });
+                    )
+                }
+
+                if (room.querySelector('#work_cont').children.length >= max - 1) {
+                    room.querySelector('.add').remove()
+                }
+            });
         }
     })
 
