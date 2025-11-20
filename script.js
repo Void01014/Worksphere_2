@@ -93,7 +93,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
             {
                 id: 4,
-                name: "Other",
+                name: "Lara Craft",
                 role: "Receptionist",
                 room: "reception",
                 photo: "https://i.pravatar.cc/150?img=5",
@@ -111,6 +111,8 @@ window.addEventListener("DOMContentLoaded", () => {
             }
         ];
 
+    let assignedWorkers = []
+
     console.log(workers)
     //this function loops over all the rooms and makes sure that it looks the way it's supposed to
     const roomCapacities = {
@@ -127,13 +129,19 @@ window.addEventListener("DOMContentLoaded", () => {
         const rooms = document.querySelectorAll('.room');
         rooms.forEach(room => {
             const max = roomCapacities[room.id] || 1;
-            console.log(max)
             if (room.classList.contains('important') && room.children.length < 2) {
                 room.style.backgroundColor = 'rgba(238, 91, 91, 0.529)';
             }
-            if (room.classList.contains('room') && room.children.length < max) {
+            else {
+                room.style.backgroundColor = '';
+            }
+            if (room.classList.contains('room') && room.children.length < max && !room.querySelector('.assigned_worker')) {
+                // alert(!room.querySelector('.assigned_worker'))
                 room.insertAdjacentHTML('beforeend',
-                    `<button class="w-[50px] h-[50px] bg-blue-600 rounded-xl flex justify-center items-center hover:scale-120 cursor-pointer add"><p class="text-3xl text-white pointer-events-none">+</p></button>`
+                    `<div class="flex flex-wrap gap-3 w-[60%]" >
+                    <div class="flex flex-wrap gap-3 w-[60%]" id="work_cont"></div>
+                    <button class="w-[50px] h-[50px] bg-blue-600 rounded-xl flex justify-center items-center hover:scale-120 cursor-pointer add"><p class="text-3xl text-white pointer-events-none">+</p></button>
+                    </div>`
                 )
             }
         });
@@ -142,10 +150,12 @@ window.addEventListener("DOMContentLoaded", () => {
     check();
 
     map.addEventListener('click', (event) => {
-        const room = event.target.closest(".room")
-        const room_title = event.target.previousElementSibling;
-
         if (event.target.classList.contains('add')) {
+            let room = event.target.closest(".room");
+            let room_id = event.target.closest(".room").id;
+
+            const room_title = event.target.parentElement.previousElementSibling;
+
             overlay.classList.add('open');
             overlay.innerHTML = `
                 <div class="modal bg-white w-[88%] md:w-[500px] h-[82vh] md:h-full overflow-scroll rounded-2xl p-10 flex flex-col items-center gap-4" id="assignModal" >
@@ -162,10 +172,10 @@ window.addEventListener("DOMContentLoaded", () => {
                 let filtered_workers = [];
 
                 workers.forEach(worker => {
-                    if(worker.room == 'vault'){
+                    if (worker.room == 'vault') {
                         filtered_workers.push(worker);
                     }
-                    else if (worker.room == room.id || worker.room == 'all' ||( worker.room == 'staff' && room.id !== 'vault')) {
+                    else if (worker.room == room.id || worker.room == 'all' || (worker.room == 'staff' && room.id !== 'vault')) {
                         filtered_workers.push(worker);
                     }
                 });
@@ -179,15 +189,54 @@ window.addEventListener("DOMContentLoaded", () => {
             const closeBtn = document.getElementById("closeModalBtn");
             closeBtn.addEventListener('click', closeModal);
 
+            const max = roomCapacities[room.id] || 1;
             const assignModal = document.getElementById('assignModal');
-            console.log(assignModal);
-
             assignModal.addEventListener('click', (event) => {
-                if(event.target.classList.contains('un_worker')){
-                    alert()
+                room = document.getElementById(`${room_id}`)
+                // alert(room.querySelector('#work_cont').children.length)
+                if (room.querySelector('#work_cont').children.length >= max - 1) {
+                    Swal.fire({
+                        icon: "error",
+                        text: "You can't add more workers here",
+                    });
+                } else {
+                    if (event.target.classList.contains('un_worker')) {
+                        let selectedWorker = workers.find(worker => worker.id == event.target.id);
+                        assignedWorkers.push(selectedWorker);
+                        //get the index of the assigned worker
+                        const index = workers.findIndex(worker => worker.id == event.target.id);
+                        if (index !== -1) workers.splice(index, 1);
+
+                        console.log(assignedWorkers);
+                        console.log(workers);
+                        room.querySelector('#work_cont').insertAdjacentHTML('afterbegin', `
+                        <div class="w-15 assigned_worker">
+                            <img class="rounded-[100%] shadow-[0_0_10px_green]" src=${selectedWorker.photo} alt="">
+                            <div class="bg-white rounded-lg"><h2 class="text-[10px] text-center w-full px-2">${selectedWorker.name}</h2></div>
+                        </div>
+                    `)
+                    event.target.remove()
                 }
+            }
+            if (room.classList.contains('important') && room.children.length < 2) {
+                room.style.backgroundColor = 'rgba(238, 91, 91, 0.529)';
+            }
+            else {
+                room.style.backgroundColor = '';
+            }
+            if (room.classList.contains('room') && room.children.length < max-1 && !room.querySelector('#work_cont')) {
+                room.insertAdjacentHTML('beforeend',
+                    `<div class="flex flex-wrap gap-3" id="work_cont">
+                        <button class="w-[50px] h-[50px] bg-blue-600 rounded-xl flex justify-center items-center hover:scale-120 cursor-pointer add"><p class="text-3xl text-white pointer-events-none">+</p></button>
                 
-            });
+                    </div>`
+                )
+            }
+    
+            if (room.querySelector('#work_cont').children.length >= max-1) {
+                room.querySelector('.add').remove()
+            }
+        });
         }
     })
 
