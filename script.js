@@ -148,7 +148,7 @@ window.addEventListener("DOMContentLoaded", () => {
         if (event.target.classList.contains('add')) {
             overlay.classList.add('open');
             overlay.innerHTML = `
-                <div class="modal bg-white w-[500px] h-full overflow-scroll rounded-2xl p-10 flex flex-col items-center gap-4" >
+                <div class="modal bg-white w-[88%] md:w-[500px] h-[82vh] md:h-full overflow-scroll rounded-2xl p-10 flex flex-col items-center gap-4" id="assignModal" >
                     <button class="absolute close top-10 right-10 scale-[200%]" id="closeModalBtn">&times;</button>
                     <strong><h2 class="text-2xl text-blue-600">${room_title.textContent}</h2></strong>
                     <section class="w-full h-[100vh] pt-10 flex flex-col items-center gap-4 order-1 md:order-0" id="unassigned">
@@ -162,7 +162,10 @@ window.addEventListener("DOMContentLoaded", () => {
                 let filtered_workers = [];
 
                 workers.forEach(worker => {
-                    if (worker.room == room.id || worker.room == 'all') {
+                    if(worker.room == 'vault'){
+                        filtered_workers.push(worker);
+                    }
+                    else if (worker.room == room.id || worker.room == 'all' ||( worker.room == 'staff' && room.id !== 'vault')) {
                         filtered_workers.push(worker);
                     }
                 });
@@ -176,6 +179,15 @@ window.addEventListener("DOMContentLoaded", () => {
             const closeBtn = document.getElementById("closeModalBtn");
             closeBtn.addEventListener('click', closeModal);
 
+            const assignModal = document.getElementById('assignModal');
+            console.log(assignModal);
+
+            assignModal.addEventListener('click', (event) => {
+                if(event.target.classList.contains('un_worker')){
+                    alert()
+                }
+                
+            });
         }
     })
 
@@ -370,11 +382,15 @@ window.addEventListener("DOMContentLoaded", () => {
                     });
                     return
                 }
+                //Get the value of the room attribute
+                const selectedOption = form.role.options[form.role.selectedIndex];
+                const room = selectedOption.getAttribute('room');
 
                 const worker = {
                     id: workers.length,
                     name: form.name.value,
                     role: form.role.value,
+                    room: room,
                     photo: preview.src,
                     email: form.email.value,
                     phone: form.phone.value,
@@ -448,11 +464,12 @@ window.addEventListener("DOMContentLoaded", () => {
                             <label class="font-semibold">Role</label>
                             <select type="text" name="role" class="border rounded-lg p-2 w-full" required>
                                 <option value="" disabled selected>Select a role</option>
-                                <option value="receptionist">Receptionist</option>
-                                <option value="it guy">IT Guy</option>
-                                <option value="cleaning">Cleaning</option>
-                                <option value="security">Security</option>
-                                <option value="other">Other</option>
+                                <option value="manager" room="all">Manager</option>
+                                <option value="receptionist" room="reception">Receptionist</option>
+                                <option value="technician" room="servers">Technician</option>
+                                <option value="Janitor" room="staff">Janitor</option>
+                                <option value="security" room="security">Security</option>
+                                <option value="other" room="other">Other</option>
                             </select>
                         </div>
 
