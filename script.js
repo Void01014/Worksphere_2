@@ -137,8 +137,10 @@ window.addEventListener("DOMContentLoaded", () => {
             if (room.classList.contains('room') && room.children.length < max && !room.querySelector('.assigned_worker')) {
                 // alert(!room.querySelector('.assigned_worker'))
                 room.insertAdjacentHTML('beforeend',
-                    `<div class="flex flex-col md:flex-col border -rotate-90 md:rotate-0 flex-wrap items-center justify-center md:items-center gap-3 md:w-full md:h-full md:mt-5">
-                        <div class="flex flex-wrap gap-3 h-23 border w-16 md:h-max md:w-max md:max-w-[52%] overflow-hidden md:overflow-visible" id="work_cont"></div>
+                    `<div class="flex flex-col md:flex-col -rotate-90 md:rotate-0 flex-wrap items-center justify-center md:items-center gap-3 md:w-full md:h-full md:mt-5">
+                        <div class="relative flex flex-wrap gap-3 h-26 border w-16 md:h-max md:w-max md:max-w-[52%] overflow-hidden md:overflow-visible" id="work_cont">
+
+                        </div>
                         <button class="w-[calc(2vw+1.7rem)] h-[calc(2vw+1.5rem)] bg-blue-600 rounded-xl flex justify-center items-center hover:scale-120 cursor-pointer add"><p class="text-3xl text-white pointer-events-none">+</p></button>
                     </div>`
                 )
@@ -149,8 +151,26 @@ window.addEventListener("DOMContentLoaded", () => {
     check();
 
     map.addEventListener('click', (event) => {
-        if(event.target.classList.contains('assigned_worker')){
-            
+        // let sel
+
+        if (event.target.classList.contains('minus_work')) {
+            const workerEl = event.target.closest('.assigned_worker');
+            const id = workerEl.id;
+
+            const selectedWorker = assignedWorkers.find(worker => worker.id == id);
+
+            console.log('workers before:', workers);
+            console.log('ass_workers before:', assignedWorkers);
+
+            workers.push(selectedWorker);
+
+            const index = assignedWorkers.findIndex(worker => worker.id == id);
+            if (index !== -1) assignedWorkers.splice(index, 1);
+
+            console.log('workers after:', workers);
+            console.log('ass_workers after:', assignedWorkers);
+
+            workerEl.remove(); 
         }
         if (event.target.classList.contains('add')) {
             let room = event.target.closest(".room");
@@ -193,7 +213,6 @@ window.addEventListener("DOMContentLoaded", () => {
             const assignModal = document.getElementById('assignModal');
             assignModal.addEventListener('click', (event) => {
                 room = document.getElementById(`${room_id}`)
-                // alert(room.querySelector('#work_cont').children.length)
                 if (event.target.classList.contains('un_worker')) {
                     if (room.querySelector('#work_cont').children.length >= max - 1) {
                         Swal.fire({
@@ -204,15 +223,16 @@ window.addEventListener("DOMContentLoaded", () => {
                     else {
                         let selectedWorker = workers.find(worker => worker.id == event.target.id);
                         assignedWorkers.push(selectedWorker);
-                        console.log(assignedWorkers);
-                        
+                        console.log('ass_workers before:', assignedWorkers);
+
+
                         //get the index of the assigned worker
                         const index = workers.findIndex(worker => worker.id == event.target.id);
                         if (index !== -1) workers.splice(index, 1);
                         room.querySelector('#work_cont').insertAdjacentHTML('afterbegin', `
-                            <div class="relative w-15 assigned_worker">
-                            <button id="minus-exp" class="absolute -top-2 -right-1 h-5 w-5 rounded-full flex items-center justify-center bg-red-500 text-white shadow-[0_0_10px_gray] cursor-pointer hover:scale-110 transition-transform">
-                                <svg viewBox="0 0 24 24" width="24" height="24">
+                            <div class="relative w-15 assigned_worker" id="${selectedWorker.id}">
+                            <button class="absolute -top-2 -right-1 h-5 w-5 rounded-full flex items-center justify-center bg-red-500 text-white shadow-[0_0_10px_gray] cursor-pointer hover:scale-110 transition-transform minus_work">
+                                <svg class="pointer-events-none" viewBox="0 0 24 24" width="24" height="24">
                                     <path d="M7 12 L17 12" stroke="black" stroke-width="2" />
                                 </svg>
                             </button>
@@ -224,18 +244,23 @@ window.addEventListener("DOMContentLoaded", () => {
                     }
                 }
                 if (room.classList.contains('important') && room.children.length < 2) {
-                    room.style.backgroundColor = 'rgba(238, 91, 91, 0.529)';
+                    // room.style.backgroundColor = 'rgba(238, 91, 91, 0.529)';
                 }
                 else {
                     room.style.backgroundColor = '';
                 }
-                if (room.classList.contains('room') && room.children.length < max - 1 && !room.querySelector('#work_cont')) {
-                    room.insertAdjacentHTML('beforeend',
-                        `<div class="flex flex-wrap gap-3" id="work_cont">
-                        <button class="w-[50px] h-[50px] bg-blue-600 rounded-xl flex justify-center items-center hover:scale-120 cursor-pointer add"><p class="text-3xl text-white pointer-events-none">+</p></button>
-                
-                    </div>`
-                    )
+                if (room.querySelector('#work_cont').children.length > 0 && window.matchMedia("(max-width: 767px)").matches) {
+                    room.querySelector('#work_cont').style.padding = '7px'
+                    room.querySelector('#work_cont').insertAdjacentHTML('beforeend',
+                        `
+                        <button class="absolute bottom-0 -right-1 h-5 w-5 rounded-full flex items-center justify-center bg-white text-black shadow-[0_0_10px_gray] cursor-pointer hover:scale-110 transition-transform minus_work">
+                                <svg class="pointer-events-none" viewBox="0 0 24 24" width="24" height="24">
+                                    <circle cx="12" cy="6" r="1.5" />
+                                    <circle cx="12" cy="12" r="1.5" />
+                                    <circle cx="12" cy="18" r="1.5" />
+                                </svg>
+                            </button>
+                    `)
                 }
 
                 if (room.querySelector('#work_cont').children.length >= max - 1) {
@@ -318,7 +343,7 @@ window.addEventListener("DOMContentLoaded", () => {
             let add_exp = document.getElementById('addExperience')
 
             overlay.querySelector('.modal').addEventListener('click', (e) => {
-                if(e.target.classList.contains('minus_exp')){
+                if (e.target.classList.contains('minus_exp')) {
                     e.target.closest('.experience-item').remove();
                 }
             })
