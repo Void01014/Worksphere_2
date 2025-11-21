@@ -149,6 +149,9 @@ window.addEventListener("DOMContentLoaded", () => {
     check();
 
     map.addEventListener('click', (event) => {
+        if(event.target.classList.contains('assigned_worker')){
+            
+        }
         if (event.target.classList.contains('add')) {
             let room = event.target.closest(".room");
             let room_id = event.target.closest(".room").id;
@@ -207,11 +210,15 @@ window.addEventListener("DOMContentLoaded", () => {
                         const index = workers.findIndex(worker => worker.id == event.target.id);
                         if (index !== -1) workers.splice(index, 1);
                         room.querySelector('#work_cont').insertAdjacentHTML('afterbegin', `
-                        <div class="w-15 assigned_worker">
-                            <button class="absolute h-2 w-2 -top-2 -right-1 scale-200 flex justify-center items-start bg-red-500 rounded-xl  shadow-[0_0_10px_gray] cursor-pointer" id="minus-exp">-</button>
-                            <img class="rounded-[100%] shadow-[0_0_10px_green]" src=${selectedWorker.photo} alt="">
-                            <div class="bg-white rounded-lg"><h2 class="text-[10px] text-center w-full px-2">${selectedWorker.name}</h2></div>
-                        </div>
+                            <div class="relative w-15 assigned_worker">
+                            <button id="minus-exp" class="absolute -top-2 -right-1 h-5 w-5 rounded-full flex items-center justify-center bg-red-500 text-white shadow-[0_0_10px_gray] cursor-pointer hover:scale-110 transition-transform">
+                                <svg viewBox="0 0 24 24" width="24" height="24">
+                                    <path d="M7 12 L17 12" stroke="black" stroke-width="2" />
+                                </svg>
+                            </button>
+                                <img class="rounded-[100%] shadow-[0_0_10px_green]" src=${selectedWorker.photo} alt="">
+                                <div class="bg-white rounded-lg"><h2 class="text-[10px] text-center w-full px-2">${selectedWorker.name}</h2></div>
+                            </div>
                         `)
                         event.target.remove()
                     }
@@ -310,6 +317,12 @@ window.addEventListener("DOMContentLoaded", () => {
             const preview = document.getElementById('preview');
             let add_exp = document.getElementById('addExperience')
 
+            overlay.querySelector('.modal').addEventListener('click', (e) => {
+                if(e.target.classList.contains('minus_exp')){
+                    e.target.closest('.experience-item').remove();
+                }
+            })
+
             pfp_inpt.addEventListener('input', (event) => {
                 const url = pfp_inpt.value.trim();
 
@@ -326,7 +339,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 overlay.querySelector('#experiences').insertAdjacentHTML('beforeend',
                     `
                     <div class="relative experience-item border rounded-xl p-4 flex flex-col gap-3 mb-8">
-                        <button class="absolute h-5 w-5 -top-2 -right-1 scale-200 flex justify-center items-start bg-red-500 rounded-xl leading-none shadow-[0_0_10px_gray] cursor-pointer" id="minus-exp">-</button>
+                        <button type="button" class="absolute h-5 w-5 -top-2 -right-1 scale-200 flex justify-center items-start bg-red-500 rounded-xl leading-none shadow-[0_0_10px_gray] cursor-pointer minus_exp">-</button>
 
                         <div class="flex flex-col">
                             <label class="font-semibold">Start Date</label>
