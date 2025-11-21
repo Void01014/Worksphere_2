@@ -141,7 +141,7 @@ window.addEventListener("DOMContentLoaded", () => {
                         <div class="relative flex flex-wrap gap-3 h-26 border w-16 md:h-max md:w-max md:max-w-[52%] overflow-hidden md:overflow-visible" id="work_cont">
 
                         </div>
-                        <button class="w-[calc(2vw+1.7rem)] h-[calc(2vw+1.5rem)] bg-blue-600 rounded-xl flex justify-center items-center hover:scale-120 cursor-pointer add"><p class="text-3xl text-white pointer-events-none">+</p></button>
+                        <button class="w-[calc(2vw+1.7rem)] h-[calc(2vw+1.5rem)] bg-green-600 rounded-xl flex justify-center items-center hover:scale-120 cursor-pointer add"><p class="text-3xl text-white pointer-events-none">+</p></button>
                     </div>`
                 )
             }
@@ -158,19 +158,16 @@ window.addEventListener("DOMContentLoaded", () => {
             const id = workerEl.id;
             const selectedWorker = assignedWorkers.find(worker => worker.id == id);
 
-
-            console.log('workers before:', workers);
-            console.log('ass_workers before:', assignedWorkers);
-
             workers.push(selectedWorker);
 
             const index = assignedWorkers.findIndex(worker => worker.id == id);
             if (index !== -1) assignedWorkers.splice(index, 1);
-
-            console.log('workers after:', workers);
-            console.log('ass_workers after:', assignedWorkers);
-
+                        
             workerEl.remove();
+                                                    unassigned.innerHTML = '';
+                        displayAllUnassigned(1);
+                        alert()
+
             if (room.classList.contains('important') && room.querySelector('#work_cont').children.length < 1) {
                 room.style.backgroundColor = 'rgba(238, 91, 91, 0.529)';
             }
@@ -181,7 +178,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 room.querySelector('#work_cont').style.padding = '7px';
                 room.querySelector(".cont").insertAdjacentHTML('beforeend',
                     `
-                        <button class="w-[calc(2vw+1.7rem)] h-[calc(2vw+1.5rem)] bg-blue-600 rounded-xl flex justify-center items-center hover:scale-120 cursor-pointer add"><p class="text-3xl text-white pointer-events-none">+</p></button>
+                        <button class="w-[calc(2vw+1.7rem)] h-[calc(2vw+1.5rem)] bg-green-600 rounded-xl flex justify-center items-center hover:scale-120 cursor-pointer add"><p class="text-3xl text-white pointer-events-none">+</p></button>
                     `
                 )
             }
@@ -197,14 +194,14 @@ window.addEventListener("DOMContentLoaded", () => {
             overlay.innerHTML = `
                 <div class="modal bg-white w-[88%] md:w-[500px] h-[82vh] md:h-full overflow-scroll rounded-2xl p-10 flex flex-col items-center gap-4" id="assignModal" >
                     <button class="absolute close top-10 right-10 scale-[200%]" id="closeModalBtn">&times;</button>
-                    <strong><h2 class="text-2xl text-blue-600">${room_title.textContent}</h2></strong>
-                    <section class="w-full h-[100vh] pt-10 flex flex-col items-center gap-4 order-1 md:order-0" id="unassigned">
+                    <strong><h2 class="text-2xl text-green-400">${room_title.textContent}</h2></strong>
+                    <section class="w-full h-[100vh] pt-10 flex flex-col items-center gap-4 order-1 md:order-0" id="unassigned2">
                         
                     </section>
                 </div>
                 `;
             if (room.classList.contains('all')) {
-                displayAllUnassigned()
+                displayAllUnassigned(2)
             } else {
                 let filtered_workers = [];
 
@@ -218,7 +215,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 });
 
                 const filteredWorkersHTML = filtered_workers.map(worker => createWorkerHTML(worker)).join('');
-                let unassigned = document.getElementById('unassigned');
+                let unassigned = document.getElementById('unassigned1');
                 unassigned.insertAdjacentHTML("beforeend", filteredWorkersHTML);
             }
             const closeBtn = document.getElementById("closeModalBtn");
@@ -238,8 +235,6 @@ window.addEventListener("DOMContentLoaded", () => {
                     else {
                         let selectedWorker = workers.find(worker => worker.id == event.target.id);
                         assignedWorkers.push(selectedWorker);
-                        console.log('ass_workers before:', assignedWorkers);
-
 
                         //get the index of the assigned worker
                         const index = workers.findIndex(worker => worker.id == event.target.id);
@@ -256,6 +251,8 @@ window.addEventListener("DOMContentLoaded", () => {
                             </div>
                         `)
                         event.target.remove()
+                        unassigned.innerHTML = '';
+                        displayAllUnassigned(1);
                     }
                 }
                 if (room.classList.contains('important') && room.children.length < 2) {
@@ -310,18 +307,19 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     //Inserting the Workers dynamically in the unassigned section
-    function displayAllUnassigned() {
-        let unassigned = document.getElementById('unassigned');
+    function displayAllUnassigned(choice) {
+        let unassigned = document.getElementById(`unassigned${choice}`);
         const allWorkersHTML = workers.map(worker => createWorkerHTML(worker)).join('');
         unassigned.insertAdjacentHTML("beforeend", allWorkersHTML);
     }
 
-    displayAllUnassigned();
+    displayAllUnassigned(1);
 
     let un_workers = document.querySelectorAll('.un_worker');
     const overlay = document.getElementById('overlay');
     const closeModalBtn = document.getElementById('closeModalBtn');
 
+    let unassigned = document.querySelector('#unassigned1');
     //Display details on click
     unassigned.addEventListener('click', (event) => {
         let worker = workers.find(worker => worker.id == event.target.id);
@@ -628,7 +626,7 @@ window.addEventListener("DOMContentLoaded", () => {
                             Add Experience +
                         </button>
 
-                        <button type="submit" class="w-full py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 cursor-pointer">
+                        <button type="submit" class="w-full py-3 bg-green-600 text-white rounded-xl hover:scale-110 cursor-pointer">
                             Add Worker
                         </button>
                     </form>
