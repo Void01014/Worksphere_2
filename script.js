@@ -135,7 +135,6 @@ window.addEventListener("DOMContentLoaded", () => {
                 room.style.backgroundColor = '';
             }
             if (room.classList.contains('room') && room.children.length < max && !room.querySelector('.assigned_worker')) {
-                // alert(!room.querySelector('.assigned_worker'))
                 room.insertAdjacentHTML('beforeend',
                     `<div class="flex flex-col md:flex-col -rotate-90 md:rotate-0 flex-wrap items-center justify-center md:items-center gap-3 md:w-full md:h-full md:mt-5 cont">
                         <div class="relative flex flex-wrap gap-3 h-26 border w-16 md:h-max md:w-max md:max-w-[52%] overflow-hidden md:overflow-visible" id="work_cont">
@@ -164,9 +163,8 @@ window.addEventListener("DOMContentLoaded", () => {
             if (index !== -1) assignedWorkers.splice(index, 1);
                         
             workerEl.remove();
-                                                    unassigned.innerHTML = '';
-                        displayAllUnassigned(1);
-                        alert()
+            unassigned.innerHTML = '';
+            displayAllUnassigned(1);
 
             if (room.classList.contains('important') && room.querySelector('#work_cont').children.length < 1) {
                 room.style.backgroundColor = 'rgba(238, 91, 91, 0.529)';
@@ -319,11 +317,11 @@ window.addEventListener("DOMContentLoaded", () => {
     const overlay = document.getElementById('overlay');
     const closeModalBtn = document.getElementById('closeModalBtn');
 
+    let sideBar = document.getElementById('sideBar')
     let unassigned = document.querySelector('#unassigned1');
     //Display details on click
-    unassigned.addEventListener('click', (event) => {
+    sideBar.addEventListener('click', (event) => {
         let worker = workers.find(worker => worker.id == event.target.id);
-
         if (event.target.classList.contains('un_worker')) {
             overlay.classList.add('open');
             overlay.innerHTML = `
@@ -350,7 +348,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
         } else if (event.target.id == 'new_W') {
             addWorker(event.target);
-
             const pfp_inpt = document.getElementById('photoUrl');
             const preview = document.getElementById('preview');
             let add_exp = document.getElementById('addExperience')
@@ -517,11 +514,12 @@ window.addEventListener("DOMContentLoaded", () => {
                 localStorage.setItem('workers', JSON.stringify(workers));
 
                 function displayNewUnassigned() {
-                    let unassigned = document.getElementById('unassigned');
+                    let unassigned = document.getElementById('unassigned1');
                     const newWorkerHTML = createWorkerHTML(worker);
                     unassigned.insertAdjacentHTML("beforeend", newWorkerHTML);
                 }
-
+                
+                alert()
                 displayNewUnassigned();
 
 
