@@ -151,13 +151,13 @@ window.addEventListener("DOMContentLoaded", () => {
     check();
 
     map.addEventListener('click', (event) => {
-        // let sel
-
         if (event.target.classList.contains('minus_work')) {
+            let room = event.target.closest(".room");
+            const max = roomCapacities[room.id] || 1;
             const workerEl = event.target.closest('.assigned_worker');
             const id = workerEl.id;
-
             const selectedWorker = assignedWorkers.find(worker => worker.id == id);
+
 
             console.log('workers before:', workers);
             console.log('ass_workers before:', assignedWorkers);
@@ -170,7 +170,18 @@ window.addEventListener("DOMContentLoaded", () => {
             console.log('workers after:', workers);
             console.log('ass_workers after:', assignedWorkers);
 
-            workerEl.remove(); 
+            workerEl.remove();
+            if (room.classList.contains('important') && room.querySelector('#work_cont').children.length < 1) {
+                room.style.backgroundColor = 'rgba(238, 91, 91, 0.529)';
+            }
+            else {
+                room.style.backgroundColor = '';
+            }
+            if (room.querySelector('#work_cont').children.length > 0 && window.matchMedia("(max-width: 767px)").matches) {
+                room.querySelector('#work_cont').style.padding = '7px';
+                
+            }
+
         }
         if (event.target.classList.contains('add')) {
             let room = event.target.closest(".room");
@@ -244,7 +255,7 @@ window.addEventListener("DOMContentLoaded", () => {
                     }
                 }
                 if (room.classList.contains('important') && room.children.length < 2) {
-                    // room.style.backgroundColor = 'rgba(238, 91, 91, 0.529)';
+                    room.style.backgroundColor = 'rgba(238, 91, 91, 0.529)';
                 }
                 else {
                     room.style.backgroundColor = '';
