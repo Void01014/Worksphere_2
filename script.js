@@ -113,7 +113,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
     let assignedWorkers = []
 
-    console.log(workers)
     //this function loops over all the rooms and makes sure that it looks the way it's supposed to
     const roomCapacities = {
         'conference': 7,
@@ -121,7 +120,7 @@ window.addEventListener("DOMContentLoaded", () => {
         'security': 3,
         'reception': 3,
         'staff': 3,
-        'vault': 2
+        'vault': 3
     };
 
     function check() {
@@ -138,9 +137,9 @@ window.addEventListener("DOMContentLoaded", () => {
             if (room.classList.contains('room') && room.children.length < max && !room.querySelector('.assigned_worker')) {
                 // alert(!room.querySelector('.assigned_worker'))
                 room.insertAdjacentHTML('beforeend',
-                    `<div class="flex flex-wrap gap-3 w-[60%]" >
-                    <div class="flex flex-wrap gap-3 w-[60%]" id="work_cont"></div>
-                    <button class="w-[50px] h-[50px] bg-blue-600 rounded-xl flex justify-center items-center hover:scale-120 cursor-pointer add"><p class="text-3xl text-white pointer-events-none">+</p></button>
+                    `<div class="flex flex-col md:flex-col border -rotate-90 md:rotate-0 flex-wrap items-center justify-center md:items-center gap-3 md:w-full md:h-full md:mt-5">
+                        <div class="flex flex-wrap gap-3 h-23 border w-16 md:h-max md:w-max md:max-w-[52%] overflow-hidden md:overflow-visible" id="work_cont"></div>
+                        <button class="w-[calc(2vw+1.7rem)] h-[calc(2vw+1.5rem)] bg-blue-600 rounded-xl flex justify-center items-center hover:scale-120 cursor-pointer add"><p class="text-3xl text-white pointer-events-none">+</p></button>
                     </div>`
                 )
             }
@@ -179,12 +178,10 @@ window.addEventListener("DOMContentLoaded", () => {
                         filtered_workers.push(worker);
                     }
                 });
-                console.log(filtered_workers);
 
                 const filteredWorkersHTML = filtered_workers.map(worker => createWorkerHTML(worker)).join('');
                 let unassigned = document.getElementById('unassigned');
                 unassigned.insertAdjacentHTML("beforeend", filteredWorkersHTML);
-
             }
             const closeBtn = document.getElementById("closeModalBtn");
             closeBtn.addEventListener('click', closeModal);
@@ -204,13 +201,14 @@ window.addEventListener("DOMContentLoaded", () => {
                     else {
                         let selectedWorker = workers.find(worker => worker.id == event.target.id);
                         assignedWorkers.push(selectedWorker);
+                        console.log(assignedWorkers);
+                        
                         //get the index of the assigned worker
                         const index = workers.findIndex(worker => worker.id == event.target.id);
                         if (index !== -1) workers.splice(index, 1);
-                        console.log(assignedWorkers);
-                        console.log(workers);
                         room.querySelector('#work_cont').insertAdjacentHTML('afterbegin', `
                         <div class="w-15 assigned_worker">
+                            <button class="absolute h-2 w-2 -top-2 -right-1 scale-200 flex justify-center items-start bg-red-500 rounded-xl  shadow-[0_0_10px_gray] cursor-pointer" id="minus-exp">-</button>
                             <img class="rounded-[100%] shadow-[0_0_10px_green]" src=${selectedWorker.photo} alt="">
                             <div class="bg-white rounded-lg"><h2 class="text-[10px] text-center w-full px-2">${selectedWorker.name}</h2></div>
                         </div>
@@ -462,7 +460,6 @@ window.addEventListener("DOMContentLoaded", () => {
                 });
 
                 workers.push(worker);
-                console.log(workers);
                 closeModal()
                 overlay.innerHTML = ''
                 //Save into Local 
