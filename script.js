@@ -213,7 +213,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 });
 
                 const filteredWorkersHTML = filtered_workers.map(worker => createWorkerHTML(worker)).join('');
-                let unassigned = document.getElementById('unassigned1');
+                let unassigned = document.getElementById('unassigned2');
                 unassigned.insertAdjacentHTML("beforeend", filteredWorkersHTML);
             }
             const closeBtn = document.getElementById("closeModalBtn");
