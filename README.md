@@ -26,7 +26,7 @@ Technologie used:
 Links :
 
 [GitHub](https://github.com/Void01014/Worksphere_2/tree/main)
-
+|
 [Vercel](https://worksphere-2.vercel.app/)
-
+|
 [Trello planification](https://trello.com/b/NhanTGkG/worksphere)

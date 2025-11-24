@@ -137,10 +137,10 @@ window.addEventListener("DOMContentLoaded", () => {
             if (room.classList.contains('room') && room.children.length < max && !room.querySelector('.assigned_worker')) {
                 room.insertAdjacentHTML('beforeend',
                     `<div class="flex flex-col md:flex-col -rotate-90 md:rotate-0 flex-wrap items-center justify-center md:items-center gap-3 md:w-full md:h-full md:mt-5 cont">
-                        <div class="relative flex flex-wrap gap-3 h-26 border w-16 md:h-max md:w-max md:max-w-[52%] overflow-hidden md:overflow-visible" id="work_cont">
+                        <div class="flex flex-wrap gap-3 h-26 w-16 md:h-max md:w-max md:max-w-[52%] overflow-scroll md:overflow-visible" id="work_cont">
 
                         </div>
-                        <button class="w-[calc(2vw+1.7rem)] h-[calc(2vw+1.5rem)] bg-green-600 rounded-xl flex justify-center items-center hover:scale-120 cursor-pointer add"><p class="text-3xl text-white pointer-events-none">+</p></button>
+                        <button class="absolute md:bottom-10 md:left-10 -bottom-1 left-15 w-[calc(2vw+1.7rem)] h-[calc(2vw+1.5rem)] bg-green-600 rounded-xl flex justify-center items-center hover:scale-120 cursor-pointer add"><p class="text-3xl text-white pointer-events-none">+</p></button>
                     </div>`
                 )
             }
@@ -172,11 +172,11 @@ window.addEventListener("DOMContentLoaded", () => {
             else {
                 room.style.backgroundColor = '';
             }
-            if (room.querySelector('#work_cont').children.length > 0) {
-                room.querySelector('#work_cont').style.padding = '7px';
-                room.querySelector(".cont").insertAdjacentHTML('beforeend',
+            if (room.querySelector('#work_cont').children.length > 0 && room.querySelector('.cont')) {
+                room.querySelector('.cont').style.position = 'relative';
+                room.querySelector('.cont').insertAdjacentHTML('beforeend',
                     `
-                        <button class="w-[calc(2vw+1.7rem)] h-[calc(2vw+1.5rem)] bg-green-600 rounded-xl flex justify-center items-center hover:scale-120 cursor-pointer add"><p class="text-3xl text-white pointer-events-none">+</p></button>
+                        <button class="absolute md:bottom-10 md:left-10 -bottom-1 w-[calc(2vw+1.7rem)] h-[calc(2vw+1.5rem)] bg-green-600 rounded-xl flex justify-center items-center hover:scale-120 cursor-pointer add"><p class="text-3xl text-white pointer-events-none">+</p></button>
                     `
                 )
             }
@@ -258,19 +258,6 @@ window.addEventListener("DOMContentLoaded", () => {
                 }
                 else {
                     room.style.backgroundColor = '';
-                }
-                if (room.querySelector('#work_cont').children.length > 0 && window.matchMedia("(max-width: 767px)").matches) {
-                    room.querySelector('#work_cont').style.padding = '7px'
-                    room.querySelector('#work_cont').insertAdjacentHTML('beforeend',
-                        `
-                        <button class="absolute bottom-0 -right-1 h-5 w-5 rounded-full flex items-center justify-center bg-white text-black shadow-[0_0_10px_gray] cursor-pointer hover:scale-110 transition-transform minus_work">
-                                <svg class="pointer-events-none" viewBox="0 0 24 24" width="24" height="24">
-                                    <circle cx="12" cy="6" r="1.5" />
-                                    <circle cx="12" cy="12" r="1.5" />
-                                    <circle cx="12" cy="18" r="1.5" />
-                                </svg>
-                            </button>
-                    `)
                 }
 
                 if (room.querySelector('#work_cont').children.length >= max - 1) {

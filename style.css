@@ -9,6 +9,4 @@
   }
   .overlay.open { display: flex; }
  
-.overlay.open .modal { transform: translateY(0); opacity: 1; }
-
-.modal .close { background: transparent; border: none; font-size:18px; cursor:pointer; }
+.modal .close { background: transparent;}
