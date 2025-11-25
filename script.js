@@ -115,12 +115,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
     //this function loops over all the rooms and makes sure that it looks the way it's supposed to
     const roomCapacities = {
-        'conference': 7,
-        'servers': 3,
-        'security': 3,
-        'reception': 3,
-        'staff': 3,
-        'vault': 3
+        'conference': 6,
+        'servers': 2,
+        'security': 2,
+        'reception': 2,
+        'staff': 2,
+        'vault': 2
     };
 
     function check() {
@@ -156,6 +156,8 @@ window.addEventListener("DOMContentLoaded", () => {
             const workerEl = event.target.closest('.assigned_worker');
             const id = workerEl.id;
             const selectedWorker = assignedWorkers.find(worker => worker.id == id);
+            let unassigned = document.getElementById('unassigned1');
+
 
             workers.push(selectedWorker);
 
@@ -173,7 +175,6 @@ window.addEventListener("DOMContentLoaded", () => {
                 room.style.backgroundColor = '';
             }
             if (room.querySelector('#work_cont').children.length > 0 && room.querySelector('.cont')) {
-                room.querySelector('.cont').style.position = 'relative';
                 room.querySelector('.cont').insertAdjacentHTML('beforeend',
                     `
                         <button class="absolute md:bottom-10 md:left-10 -bottom-1 w-[calc(2vw+1.7rem)] h-[calc(2vw+1.5rem)] bg-green-600 rounded-xl flex justify-center items-center hover:scale-120 cursor-pointer add"><p class="text-3xl text-white pointer-events-none">+</p></button>
@@ -204,10 +205,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 let filtered_workers = [];
 
                 workers.forEach(worker => {
-                    if (worker.room == 'vault') {
-                        filtered_workers.push(worker);
-                    }
-                    else if (worker.room == room.id || worker.room == 'all' || (worker.room == 'staff' && room.id !== 'vault')) {
+                    if (worker.room == room.id || worker.room == 'all' || (worker.room == 'staff' && room.id !== 'vault')) {
                         filtered_workers.push(worker);
                     }
                 });
@@ -222,9 +220,8 @@ window.addEventListener("DOMContentLoaded", () => {
             const max = roomCapacities[room.id] || 1;
             const assignModal = document.getElementById('assignModal');
             assignModal.addEventListener('click', (event) => {
-                room = document.getElementById(`${room_id}`)
                 if (event.target.classList.contains('un_worker')) {
-                    if (room.querySelector('#work_cont').children.length >= max - 1) {
+                    if (room.querySelector('#work_cont').children.length >= max) {
                         Swal.fire({
                             icon: "error",
                             text: "You can't add more workers here",
@@ -237,6 +234,7 @@ window.addEventListener("DOMContentLoaded", () => {
                         //get the index of the assigned worker
                         const index = workers.findIndex(worker => worker.id == event.target.id);
                         if (index !== -1) workers.splice(index, 1);
+                        
                         room.querySelector('#work_cont').insertAdjacentHTML('afterbegin', `
                             <div class="relative w-15 assigned_worker" id="${selectedWorker.id}">
                             <button class="absolute -top-2 -right-1 h-5 w-5 rounded-full flex items-center justify-center bg-red-500 text-white shadow-[0_0_10px_gray] cursor-pointer hover:scale-110 transition-transform minus_work">
@@ -260,7 +258,7 @@ window.addEventListener("DOMContentLoaded", () => {
                     room.style.backgroundColor = '';
                 }
 
-                if (room.querySelector('#work_cont').children.length >= max - 1) {
+                if (room.querySelector('#work_cont').children.length >= max) {
                     room.querySelector('.add').remove()
                 }
             });
@@ -308,8 +306,10 @@ window.addEventListener("DOMContentLoaded", () => {
     let unassigned = document.querySelector('#unassigned1');
     //Display details on click
     sideBar.addEventListener('click', (event) => {
-        let worker = workers.find(worker => worker.id == event.target.id);
-        if (event.target.classList.contains('un_worker')) {
+        const selected = event.target;
+
+        let worker = workers.find(worker => worker.id == selected.id);
+        if (selected.classList.contains('un_worker')) {
             overlay.classList.add('open');
             overlay.innerHTML = `
                 <div class="modal bg-white w-[500px] h-full overflow-scroll rounded-2xl p-10 flex flex-col items-center gap-4">
@@ -333,7 +333,7 @@ window.addEventListener("DOMContentLoaded", () => {
             let allExpHTML = worker.experiences.map((exp) => createExpHTML(exp)).join('');
             experiences.insertAdjacentHTML('afterend', allExpHTML)
 
-        } else if (event.target.id == 'new_W') {
+        } else if (selected.id == 'new_W') {
             addWorker(event.target);
             const pfp_inpt = document.getElementById('photoUrl');
             const preview = document.getElementById('preview');
@@ -500,16 +500,8 @@ window.addEventListener("DOMContentLoaded", () => {
                 //Save into Local 
                 localStorage.setItem('workers', JSON.stringify(workers));
 
-                function displayNewUnassigned() {
-                    let unassigned = document.getElementById('unassigned1');
-                    const newWorkerHTML = createWorkerHTML(worker);
-                    unassigned.insertAdjacentHTML("beforeend", newWorkerHTML);
-                }
-                
-                alert()
-                displayNewUnassigned();
-
-
+                unassigned.innerHTML = '';
+                displayAllUnassigned(1)
             });
         }
 
