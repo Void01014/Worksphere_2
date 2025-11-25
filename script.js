@@ -254,7 +254,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 if (room.classList.contains('important') && room.children.length < 2) {
                     room.style.backgroundColor = 'rgba(238, 91, 91, 0.529)';
                 }
-                else {
+                else if(event.target.classList.contains('un_worker') && room.children.length >= 2) {
                     room.style.backgroundColor = '';
                 }
 
